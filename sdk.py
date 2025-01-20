@@ -7,22 +7,11 @@ class Robot(object):
     def __init__(self, token):
         self.token = token
 
-    def build_url(self, type:Union[send]):
-        return f"https://chat-go.jwzhd.com/open-apis/v1/bot/{type.__str__()}?token={self.token}"
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def build_url(self, type:Union[send, upload]):
+        if type != upload:
+            return f"https://chat-go.jwzhd.com/open-apis/v1/bot/{type.__str__()}?token={self.token}"
+        else:
+            return f"https://chat-go.jwzhd.com/open-apis/v1/image/upload?token={self.token}"  # 傻逼云湖我得专门写个分支处理图片上传
 
 
     def uploadImage(self, imageAddress:str) -> str:
@@ -31,42 +20,13 @@ class Robot(object):
         header = {"Content-Type": "multipart/form-data;"}
 
         # build body
-        file = {'image':open(imageAddress,'rb')}
+        files=[('image',open(imageAddress,'rb'))]
 
         # do upload
-        respon = requests.post(str(self.build_url(upload)), files=file, headers=header)
+        respon = requests.post(str(self.build_url(upload)), files=files, headers=header)
 
         # handle response
-        return respon.content
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return respon.text
 
     def send(self, 
             recvId, 
@@ -91,7 +51,7 @@ class Robot(object):
         # do request
         respon = requests.post(self.build_url(send), json=body, headers=header)
 
-        return respon.content
+        return respon.text
     
     def mass(self, recvIds:list, 
             recvType:uandg, 
