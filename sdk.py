@@ -1,6 +1,6 @@
 import requests
 from typing import Union
-from sometypes import *
+from typesofyh import *
 from json import loads
 
 class Robot(object):
@@ -14,19 +14,23 @@ class Robot(object):
             return f"https://chat-go.jwzhd.com/open-apis/v1/image/upload?token={self.token}"  # 傻逼云湖我得专门写个分支处理图片上传
 
 
-    def uploadImage(self, imageAddress:str) -> str:
+    def uploadImage(self, imageStream:str) -> str:
         """upload image to YunHu's server"""
-        
-        header = {"Content-Type": "multipart/form-data;"}
 
-        # build body
-        files=[('image',open(imageAddress,'rb'))]
+         # build body
+        imageFile = open(imageStream,'rb')
+        files = {"image":imageFile}
 
         # do upload
-        respon = requests.post(str(self.build_url(upload)), files=files, headers=header)
+        respon = requests.post(self.build_url(upload), files=files)
+
+        imageFile.close()
 
         # handle response
-        return respon.text
+        try:
+            return loads(respon.text)["data"]["imageKey"]
+        except:
+            return respon.text
 
     def send(self, 
             recvId, 
@@ -34,9 +38,15 @@ class Robot(object):
             contentType:types, 
             content,
             parentId=""):
-        """给单个人或群发信息"""
+        """
+        给单个人或发信息
+        若contentType为image 则在content输入图片文件（用open打开的）
+        """
 
         header = {"Content-Type": "application/json"}
+
+        if contentType == image:
+            content = self.uploadImage(content)
 
         # build message body
         body = {
