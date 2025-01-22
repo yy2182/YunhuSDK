@@ -43,8 +43,8 @@ class Robot(object):
         match contentType:
             case image.__str__():
                 body = bodyBuilder.buildUploadImageBody(recvId=recvId, recvType=recvType,content=content)
-            case text.__str__():
-                body = bodyBuilder.buildSendMarkDownMessageBody(recvId=recvId, recvType=recvType, content=content)
+            case _:
+                body = bodyBuilder.buildSendTextMessageBody(recvId=recvId, recvType=recvType, content=content)
 
         # do request
         respon = requests.post(self.build_url(send), json=body, headers=header)

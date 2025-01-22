@@ -19,16 +19,9 @@ def buildUploadImageBody(recvId, recvType, content):
 
     return body
 
-def buildSendTextMessageBody(recvId, recvType, content):
+def buildSendTextMessageBody(recvId, recvType:uandg, contentType:types, content):
     body = buildBaseRequestBody(recvId=recvId, recvType=recvType)
-    body["contentType"] = "text"
-    body["content"] = {"text":content}
-
-    return body
-
-def buildSendMarkDownMessageBody(recvId, recvType, content):
-    body = buildBaseRequestBody(recvId=recvId, recvType=recvType)
-    body["contentType"] = "markdown"
+    body["contentType"] = contentType.__str__()
     body["content"] = {"text":content}
 
     return body
