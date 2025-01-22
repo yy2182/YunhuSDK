@@ -24,7 +24,11 @@ def buildSendTextMessageBody(recvId, recvType, content):
     body["contentType"] = "text"
     body["content"] = {"text":content}
 
+    return body
+
 def buildSendMarkDownMessageBody(recvId, recvType, content):
     body = buildBaseRequestBody(recvId=recvId, recvType=recvType)
     body["contentType"] = "markdown"
     body["content"] = {"text":content}
+
+    return body
