@@ -8,7 +8,7 @@ class Robot(object):
     def __init__(self, token):
         self.token = token
 
-    def build_url(self, type:Union[send, upload]):
+    def build_url(self, type:Union[send, upload, batch_send]):
         if type != upload:
             return f"https://chat-go.jwzhd.com/open-apis/v1/bot/{type.__str__()}?token={self.token}"
         else:
@@ -44,7 +44,7 @@ class Robot(object):
             case image.__str__():
                 body = bodyBuilder.buildUploadImageBody(recvId=recvId, recvType=recvType,content=content)
             case _:
-                body = bodyBuilder.buildSendTextMessageBody(recvId=recvId, recvType=recvType, content=content)
+                body = bodyBuilder.buildSendTextMessageBody(recvId=recvId, recvType=recvType, contentType=contentType.__str__(), content=content)
 
         # do request
         respon = requests.post(self.build_url(send), json=body, headers=header)
@@ -54,7 +54,15 @@ class Robot(object):
     def mass(self, recvIds:list, 
             recvType:uandg, 
             contentType:types, 
-            content):  # TODO 具体实现
+            content):
         """批量发信息"""
-        pass
-
+        
+        # build body
+        match contentType:
+            case image.__str__():
+                raise Exception("发送图片未实现") # TODO 发送图片
+            case _:
+                body = bodyBuilder.buildBatchSendMessageBody(recvIds=recvIds, recvType=recvType, content=content)
+        
+        # do request
+        requests.post(self.build_url(batch_send), json=body)

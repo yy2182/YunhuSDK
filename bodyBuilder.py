@@ -12,7 +12,7 @@ def buildBaseRequestBody(recvId:types, recvType:uandg):
 
     return requestBody
 
-def buildUploadImageBody(recvId, recvType, content):
+def buildUploadImageBody(recvId, recvType:uandg, content):
     body = buildBaseRequestBody(recvId=recvId, recvType=recvType)
     body["contentType"] = "image"
     body["content"] = {"imageKey":content}
@@ -23,5 +23,17 @@ def buildSendTextMessageBody(recvId, recvType:uandg, contentType:types, content)
     body = buildBaseRequestBody(recvId=recvId, recvType=recvType)
     body["contentType"] = contentType.__str__()
     body["content"] = {"text":content}
+
+    return body
+
+def buildBatchSendMessageBody(recvIds:list, recvType:uandg, contentType: types, content):
+    body = {
+        "recvIds": recvIds,
+        "recvType": recvType.__str__(),
+        "contentType": contentType.__str__(),
+        "content": {
+            "text": content
+        }
+    }
 
     return body

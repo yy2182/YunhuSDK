@@ -32,6 +32,10 @@ class send(object):
     def __str__():
         return "send"
     
+class batch_send(object):
+    def __str__():
+        return "batch_send"
+    
 class upload(object):
     def __str__():
         return "upload"
