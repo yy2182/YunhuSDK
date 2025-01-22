@@ -56,13 +56,13 @@ class Robot(object):
             contentType:types, 
             content):
         """批量发信息"""
-        
+
         # build body
         match contentType:
             case image.__str__():
-                raise Exception("发送图片未实现") # TODO 发送图片
+                bodyBuilder.buildBatchSendImageBody(recvIds=recvIds,recvType=recvType,content=content)
             case _:
-                body = bodyBuilder.buildBatchSendMessageBody(recvIds=recvIds, recvType=recvType, content=content)
-        
+                body = bodyBuilder.buildBatchSendMessageBody(recvIds=recvIds, recvType=recvType, contentType=contentType.__str__(), content=content)
+
         # do request
         requests.post(self.build_url(batch_send), json=body)

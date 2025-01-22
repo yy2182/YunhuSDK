@@ -37,3 +37,15 @@ def buildBatchSendMessageBody(recvIds:list, recvType:uandg, contentType: types, 
     }
 
     return body
+
+def buildBatchSendImageBody(recvIds:list, recvType:uandg, content):
+    body = {
+        "recvIds": recvIds,
+        "recvType": recvType.__str__(),
+        "contentType": "image",
+        "content": {
+            "imageKey": content
+        }   
+    }
+
+    return body
