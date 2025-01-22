@@ -1,6 +1,7 @@
 import requests
 from typing import Union
-from typesofyh import *
+from yhtypes import *
+import bodyBuilder
 from json import loads
 
 class Robot(object):
@@ -13,20 +14,14 @@ class Robot(object):
         else:
             return f"https://chat-go.jwzhd.com/open-apis/v1/image/upload?token={self.token}"  # 傻逼云湖我得专门写个分支处理图片上传
 
-
     def uploadImage(self, imageStream:str) -> str:
         """upload image to YunHu's server"""
 
-         # build body
-        imageFile = open(imageStream,'rb')
-        files = {"image":imageFile}
+        # Build request body
+        files = {"image":imageStream}
 
-        # do upload
         respon = requests.post(self.build_url(upload), files=files)
 
-        imageFile.close()
-
-        # handle response
         try:
             return loads(respon.text)["data"]["imageKey"]
         except:
@@ -40,23 +35,16 @@ class Robot(object):
             parentId=""):
         """
         给单个人或发信息
-        若contentType为image 则在content输入图片文件（用open打开的）
+        若contentType为image 则在content输入图片文件
         """
 
         header = {"Content-Type": "application/json"}
 
-        if contentType == image:
-            content = self.uploadImage(content)
-
-        # build message body
-        body = {
-            "recvId": recvId,
-            "recvType": recvType.__str__(),
-            "contentType": contentType.__str__(),
-            "content": {
-                "text": content
-            }
-        }
+        match contentType:
+            case image.__str__():
+                body = bodyBuilder.buildUploadImageBody(recvId=recvId, recvType=recvType,content=content)
+            case text.__str__():
+                body = ...
 
         # do request
         respon = requests.post(self.build_url(send), json=body, headers=header)
@@ -70,6 +58,3 @@ class Robot(object):
         """批量发信息"""
         pass
 
-if __name__ == "__main__":
-    bot = Robot("96274fc12eef473a9c71be5b1a230224")
-    print(bot.uploadImage("./alhsk.jpg"))
