@@ -40,5 +40,9 @@ class upload(object):
     def __str__():
         return "upload"
     
+class edit(object):
+    def __str__():
+        return "edit"
+
 uandg = Union[user, group]  # user and group
 types = Union[text, image, file, markdown, html]  # message types
